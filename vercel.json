@@ -1,0 +1,5 @@
+{
+  "buildCommand": "node build.cjs",
+  "outputDirectory": "dist",
+  "installCommand": "npm install"
+}
