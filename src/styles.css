@@ -63,48 +63,47 @@ body {
     min-height: calc(100vh - 60px);
   }
   
-  .betting-table {
-    font-size: 11px;
-    gap: 4px;
-    grid-template-columns: 1fr 70px 50px 50px 80px;
-  }
-  
-  .betting-table.hide-prob {
-    grid-template-columns: 1fr 50px 50px 80px;
-  }
-  
-  .betting-table.hide-bias {
-    grid-template-columns: 1fr 70px 50px 80px;
-  }
-  
+  /* Mobile betting table - simplified 3-column layout */
+  .betting-table,
+  .betting-table.hide-prob,
+  .betting-table.hide-bias,
   .betting-table.hide-both {
-    grid-template-columns: 1fr 50px 80px;
+    font-size: 10px;
+    gap: 3px;
+    grid-template-columns: 1fr 60px 70px !important;
+    align-items: center;
   }
   
   .table-header {
-    font-size: 10px;
-    padding: 2px;
+    font-size: 9px;
+    padding: 3px 1px;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
   .table-row {
-    padding: 2px;
-    font-size: 10px;
-    word-wrap: break-word;
+    padding: 3px 1px;
+    font-size: 9px;
     overflow: hidden;
+    text-overflow: ellipsis;
   }
   
-  /* Prevent text overlap on mobile */
-  .table-row .stake-input {
-    width: 100%;
-    max-width: 70px;
-    font-size: 10px;
-    padding: 2px;
+  /* Force mobile to show only 3 columns: Bet | Payout | Stake */
+  .betting-table .table-header:not(:first-child):not(:nth-last-child(2)):not(:last-child),
+  .betting-table .table-row.probability,
+  .betting-table .table-row:has(.bias-badge) {
+    display: none !important;
   }
   
-  .bias-badge {
-    font-size: 8px !important;
-    padding: 1px 3px !important;
-    min-width: 30px !important;
+  /* Stake inputs on mobile */
+  .stake-input {
+    width: 100% !important;
+    max-width: 65px !important;
+    font-size: 10px !important;
+    padding: 3px 2px !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
   }
   
   .panel-title {

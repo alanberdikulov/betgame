@@ -118,9 +118,9 @@ export const Dice: React.FC = () => {
       <div className={getTableClassName()}>
         {/* Headers */}
         <div className="table-header">Bet Type</div>
-        {showProbabilities && <div className="table-header">Prob.</div>}
+        {showProbabilities && <div className="table-header desktop-only">Prob.</div>}
         <div className="table-header">Payout</div>
-        {showBias && <div className="table-header">Bias</div>}
+        {showBias && <div className="table-header desktop-only">Bias</div>}
         <div className="table-header">Stake</div>
         
         {/* Betting rows */}
