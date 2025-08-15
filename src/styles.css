@@ -107,6 +107,37 @@ body {
     flex-wrap: wrap;
     gap: 8px;
   }
+  
+  /* Fix bank status strip on mobile */
+  .bank-status {
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+  }
+  
+  .bank-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px;
+    font-size: 11px;
+  }
+  
+  .bank-buttons {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+  
+  .bank-buttons .btn {
+    flex: 1;
+    font-size: 12px;
+    padding: 8px 4px;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 /* Panel styles */

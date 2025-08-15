@@ -175,21 +175,23 @@ export const Coins: React.FC<CoinsProps> = ({ onStartRound, onNextRound }) => {
 
       
       {/* Status strip */}
-      <div className="status-strip">
-        <div className="status-item">
-          <span>Amount already bet</span>
-          <span className="status-value">{formatMoney(alreadyBet)}</span>
-        </div>
-        <div className="status-item">
-          <span>amount to left to bet</span>
-          <span className="status-value">{formatMoney(leftToBet)}</span>
-        </div>
-        <div className="status-item">
-          <span>Total bank</span>
-          <span className="status-value">{formatMoney(bank)}</span>
+      <div className="status-strip bank-status">
+        <div className="bank-info">
+          <div className="status-item">
+            <span>Amount already bet</span>
+            <span className="status-value">{formatMoney(alreadyBet)}</span>
+          </div>
+          <div className="status-item">
+            <span>amount to left to bet</span>
+            <span className="status-value">{formatMoney(leftToBet)}</span>
+          </div>
+          <div className="status-item">
+            <span>Total bank</span>
+            <span className="status-value">{formatMoney(bank)}</span>
+          </div>
         </div>
         
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}>
+        <div className="bank-buttons">
           <button
             className="btn btn-primary"
             onClick={onStartRound}
