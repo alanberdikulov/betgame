@@ -63,47 +63,69 @@ body {
     min-height: calc(100vh - 60px);
   }
   
-  /* Mobile betting table - simplified 3-column layout */
-  .betting-table,
-  .betting-table.hide-prob,
-  .betting-table.hide-bias,
-  .betting-table.hide-both {
-    font-size: 10px;
-    gap: 3px;
-    grid-template-columns: 1fr 60px 70px !important;
+  /* Mobile betting table - responsive to toggles */
+  .betting-table {
+    font-size: 11px;
+    gap: 4px;
+    grid-template-columns: 1fr 80px 50px 50px 80px;
     align-items: center;
   }
   
+  .betting-table.hide-prob {
+    grid-template-columns: 1fr 50px 50px 80px;
+  }
+  
+  .betting-table.hide-bias {
+    grid-template-columns: 1fr 80px 50px 80px;
+  }
+  
+  .betting-table.hide-both {
+    grid-template-columns: 1fr 50px 80px;
+  }
+  
   .table-header {
-    font-size: 9px;
-    padding: 3px 1px;
+    font-size: 10px;
+    padding: 4px 2px;
     font-weight: 600;
+    text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;
+    word-wrap: break-word;
+  }
+  
+  .table-header:first-child {
+    text-align: left;
   }
   
   .table-row {
-    padding: 3px 1px;
-    font-size: 9px;
+    padding: 4px 2px;
+    font-size: 10px;
+    text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;
+    word-wrap: break-word;
   }
   
-  /* Force mobile to show only 3 columns: Bet | Payout | Stake */
-  .betting-table .table-header:not(:first-child):not(:nth-last-child(2)):not(:last-child),
-  .betting-table .table-row.probability,
-  .betting-table .table-row:has(.bias-badge) {
-    display: none !important;
+  .table-row.bet-label {
+    text-align: left;
+    font-size: 9px;
   }
   
   /* Stake inputs on mobile */
   .stake-input {
     width: 100% !important;
-    max-width: 65px !important;
-    font-size: 10px !important;
-    padding: 3px 2px !important;
+    max-width: 75px !important;
+    font-size: 11px !important;
+    padding: 4px 2px !important;
     text-align: center !important;
     box-sizing: border-box !important;
+  }
+  
+  /* Mobile bias badges */
+  .bias-badge {
+    font-size: 9px !important;
+    padding: 2px 4px !important;
+    min-width: 35px !important;
   }
   
   .panel-title {
