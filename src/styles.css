@@ -67,20 +67,20 @@ body {
   .betting-table {
     font-size: 11px;
     gap: 4px;
-    grid-template-columns: 1fr 80px 50px 50px 80px;
+    grid-template-columns: 1fr 80px 60px 60px 80px;
     align-items: center;
   }
   
   .betting-table.hide-prob {
-    grid-template-columns: 1fr 50px 50px 80px;
+    grid-template-columns: 1fr 60px 60px 80px;
   }
   
   .betting-table.hide-bias {
-    grid-template-columns: 1fr 80px 50px 80px;
+    grid-template-columns: 1fr 80px 60px 80px;
   }
   
   .betting-table.hide-both {
-    grid-template-columns: 1fr 50px 80px;
+    grid-template-columns: 1fr 60px 80px;
   }
   
   .table-header {
