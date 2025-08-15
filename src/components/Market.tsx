@@ -150,55 +150,51 @@ export const Market: React.FC<MarketProps> = ({ currentCards, showCards }) => {
       
       <p className="panel-subtitle">(Sum of ranks; A=1 … K=13)</p>
       
-      <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-        <div className="card-container">
-          {[0, 1, 2].map(i => renderCard(currentCards?.[i] || null, i))}
+      <div className="card-container">
+        {[0, 1, 2].map(i => renderCard(currentCards?.[i] || null, i))}
+      </div>
+      
+      <div className="market-quotes">
+        <div className="bid">
+          <span>Bid: </span>
+          <span style={{ fontWeight: 700, color: '#dc2626' }}>{marketBid}</span>
         </div>
+        <div className="ask">
+          <span>Ask: </span>
+          <span style={{ fontWeight: 700, color: '#16a34a' }}>{marketAsk}</span>
+        </div>
+      </div>
+      
+      <div className="trade-section">
+        <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          Units
+          <input
+            type="number"
+            min="0"
+            step="1"
+            value={unitsInput}
+            onChange={(e) => setUnitsInput(parseInt(e.target.value) || 0)}
+            className="units-input"
+            disabled={isRoundActive || marketTrade.side !== null}
+          />
+        </label>
         
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <div className="market-quotes">
-            <div className="quote">
-              <span>Bid:</span>
-              <span style={{ fontWeight: 700, color: '#dc2626' }}>{marketBid}</span>
-            </div>
-            <div className="quote">
-              <span>Ask:</span>
-              <span style={{ fontWeight: 700, color: '#16a34a' }}>{marketAsk}</span>
-            </div>
-          </div>
+        <div className="trade-buttons">
+          <button
+            className="btn btn-danger"
+            onClick={() => handleTrade('SELL')}
+            disabled={isRoundActive || marketTrade.side === 'SELL'}
+          >
+            {getSellButtonText()}
+          </button>
           
-          <div className="trade-section">
-            <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              Units
-              <input
-                type="number"
-                min="0"
-                step="1"
-                value={unitsInput}
-                onChange={(e) => setUnitsInput(parseInt(e.target.value) || 0)}
-                className="units-input"
-                disabled={isRoundActive || marketTrade.side !== null}
-              />
-            </label>
-            
-            <button
-              className="btn btn-danger"
-              onClick={() => handleTrade('SELL')}
-              disabled={isRoundActive || marketTrade.side === 'SELL'}
-              style={{ fontSize: '13px' }}
-            >
-              {getSellButtonText()}
-            </button>
-            
-            <button
-              className="btn btn-success"
-              onClick={() => handleTrade('BUY')}
-              disabled={isRoundActive || marketTrade.side === 'BUY'}
-              style={{ fontSize: '13px' }}
-            >
-              {getBuyButtonText()}
-            </button>
-          </div>
+          <button
+            className="btn btn-success"
+            onClick={() => handleTrade('BUY')}
+            disabled={isRoundActive || marketTrade.side === 'BUY'}
+          >
+            {getBuyButtonText()}
+          </button>
         </div>
       </div>
     </div>
