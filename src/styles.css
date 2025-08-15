@@ -53,6 +53,62 @@ body {
   min-height: calc(100vh - 50px);
 }
 
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto;
+    gap: 12px;
+    padding: 12px;
+    min-height: calc(100vh - 60px);
+  }
+  
+  .betting-table {
+    font-size: 11px;
+    gap: 4px;
+  }
+  
+  .betting-table {
+    grid-template-columns: 1fr 70px 50px 50px 80px;
+  }
+  
+  .betting-table.hide-prob {
+    grid-template-columns: 1fr 50px 50px 80px;
+  }
+  
+  .betting-table.hide-bias {
+    grid-template-columns: 1fr 70px 50px 80px;
+  }
+  
+  .betting-table.hide-both {
+    grid-template-columns: 1fr 50px 80px;
+  }
+  
+  .table-header {
+    font-size: 10px;
+    padding: 2px;
+  }
+  
+  .table-row {
+    padding: 2px;
+    font-size: 10px;
+  }
+  
+  .panel-title {
+    font-size: 14px;
+  }
+  
+  .panel-subtitle {
+    font-size: 10px;
+  }
+  
+  .toolbar {
+    padding: 6px 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
 /* Panel styles */
 .panel {
   background: white;
