@@ -66,9 +66,6 @@ body {
   .betting-table {
     font-size: 11px;
     gap: 4px;
-  }
-  
-  .betting-table {
     grid-template-columns: 1fr 70px 50px 50px 80px;
   }
   
@@ -92,6 +89,22 @@ body {
   .table-row {
     padding: 2px;
     font-size: 10px;
+    word-wrap: break-word;
+    overflow: hidden;
+  }
+  
+  /* Prevent text overlap on mobile */
+  .table-row .stake-input {
+    width: 100%;
+    max-width: 70px;
+    font-size: 10px;
+    padding: 2px;
+  }
+  
+  .bias-badge {
+    font-size: 8px !important;
+    padding: 1px 3px !important;
+    min-width: 30px !important;
   }
   
   .panel-title {
