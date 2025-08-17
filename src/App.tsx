@@ -188,8 +188,8 @@ function App() {
         const terms = coinTerms[betId];
         
         if (predicate && terms && predicate(outcome)) {
-          // Return stake + winnings (stake * multiplier gives total return)
-          winnings += Math.round(stake * terms.multiplier);
+          // Return stake + profit (multiplier represents profit only)
+          winnings += stake + Math.round(stake * terms.multiplier);
         } else {
           // Losing bet: stake is already deducted, no return
         }
@@ -208,8 +208,8 @@ function App() {
         const terms = diceTerms[betId];
         
         if (predicate && terms && predicate(dice)) {
-          // Return stake + winnings (stake * multiplier gives total return)
-          winnings += Math.round(stake * terms.multiplier);
+          // Return stake + profit (multiplier represents profit only)
+          winnings += stake + Math.round(stake * terms.multiplier);
         } else {
           // Losing bet: stake is already deducted, no return
         }
@@ -228,8 +228,8 @@ function App() {
         const terms = f2Terms[betId];
         
         if (predicate && terms && predicate(cards)) {
-          // Return stake + winnings (stake * multiplier gives total return)
-          winnings += Math.round(stake * terms.multiplier);
+          // Return stake + profit (multiplier represents profit only)
+          winnings += stake + Math.round(stake * terms.multiplier);
         } else {
           // Losing bet: stake is already deducted, no return
         }
