@@ -105,10 +105,14 @@ function App() {
     
     // Calculate total winnings and round P&L
     const totalWinnings = coinWins + diceWins + f2Wins;
-    const roundPnL = totalWinnings + marketPnL;
+    // P&L = total returns - total stakes + market P&L
+    const gameStakes = Object.values(coinStakes).reduce((sum, stake) => sum + stake, 0) +
+                      Object.values(diceStakes).reduce((sum, stake) => sum + stake, 0) +
+                      Object.values(f2Stakes).reduce((sum, stake) => sum + stake, 0);
+    const roundPnL = totalWinnings - gameStakes + marketPnL;
     
-    // Add winnings to bank
-    adjustBank(totalWinnings + marketPnL + marketTrade.committed);
+    // Add total returns to bank (this includes getting stakes back + profits)
+    adjustBank(totalWinnings + marketPnL + (marketTrade.committed || 0));
     
     // Record the round result and end the round
     endRound({
@@ -184,7 +188,10 @@ function App() {
         const terms = coinTerms[betId];
         
         if (predicate && terms && predicate(outcome)) {
+          // Return stake + winnings (stake * multiplier gives total return)
           winnings += Math.round(stake * terms.multiplier);
+        } else {
+          // Losing bet: stake is already deducted, no return
         }
       }
     });
@@ -201,7 +208,10 @@ function App() {
         const terms = diceTerms[betId];
         
         if (predicate && terms && predicate(dice)) {
+          // Return stake + winnings (stake * multiplier gives total return)
           winnings += Math.round(stake * terms.multiplier);
+        } else {
+          // Losing bet: stake is already deducted, no return
         }
       }
     });
@@ -218,7 +228,10 @@ function App() {
         const terms = f2Terms[betId];
         
         if (predicate && terms && predicate(cards)) {
+          // Return stake + winnings (stake * multiplier gives total return)
           winnings += Math.round(stake * terms.multiplier);
+        } else {
+          // Losing bet: stake is already deducted, no return
         }
       }
     });
