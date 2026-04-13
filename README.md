@@ -2,7 +2,6 @@
 
 An interactive probability education tool built with React and TypeScript. Play four simultaneous betting games — coin flips, dice rolls, a card market, and a two-card side bet — all in a single round. Each game surfaces the true mathematical probability alongside a randomized payout multiplier, so you can develop intuition for expected value in real time.
 
-> **To add the demo GIF:** Record a short screen capture of a round being played and save it as `docs/demo.gif`. It will embed automatically below.
 
 ![Betting Suite Demo](docs/demo.gif)
 
