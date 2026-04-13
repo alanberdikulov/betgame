@@ -1,177 +1,195 @@
-# 🎲 Betting Suite
+# Betting Suite
 
-An interactive probability education tool built with React and TypeScript. Play four simultaneous betting games — coin flips, dice rolls, a card market, and a two-card side bet — all in a single round. Each game surfaces the true mathematical probability alongside a randomized payout multiplier, so you can develop intuition for expected value in real time.
+An interactive probability-education tool disguised as a betting game. Place stakes across four simultaneous games — coin flips, dice rolls, a card-sum market, and two-card side bets — then watch everything resolve in a single round. Each bet surfaces the true mathematical probability alongside a randomized payout multiplier, helping you build real intuition for expected value, market spreads, and edge.
 
-
-![Betting Suite Demo](docs/demo.gif)
+<p align="center">
+  <img src="docs/demo.gif" alt="Betting Suite — full round demo" width="800" />
+</p>
 
 ---
 
 ## Table of Contents
 
-- [Overview](#overview)
+- [Features](#features)
 - [Games](#games)
-  - [Coin Flips](#-coin-flips)
-  - [Dice](#-dice)
-  - [3-Card Market](#-3-card-market)
-  - [2-Card Side Bets](#-2-card-side-bets)
-- [Bias System](#bias-system)
-- [Round Flow](#round-flow)
+  - [Coin Flips](#coin-flips)
+  - [Dice](#dice)
+  - [3-Card Market](#3-card-market)
+  - [2-Card Side Bets](#2-card-side-bets)
+- [Bias & Pricing System](#bias--pricing-system)
+- [Round Lifecycle](#round-lifecycle)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
-- [Build & Deploy](#build--deploy)
+- [Building & Deploying](#building--deploying)
+- [Design Decisions](#design-decisions)
 - [Known Limitations](#known-limitations)
+- [License](#license)
 
 ---
 
-## Overview
+## Features
 
-Betting Suite simulates a realistic betting environment where outcomes are random but probabilities are mathematically exact. Every bet displays:
-
-- **Probability** — the true chance of winning, calculated analytically
-- **Payout multiplier** — how much profit a winning stake returns (e.g. `2.4×` means a $10 bet wins $24 profit)
-- **Bias label** — whether the current multiplier favors the House, the Player, or is Fair
-
-Players start with a **$1,000 bank** and place stakes across all four games before each round resolves simultaneously.
+| Capability | Detail |
+|-----------|--------|
+| **Four games in one round** | Coins, dice, a bid/ask card market, and two-card bets all resolve simultaneously |
+| **True probabilities** | Every bet line shows the analytically exact probability — toggle on/off via the toolbar |
+| **Dynamic pricing** | Multipliers are regenerated each round with a weighted bias system (Fair / House / Player) |
+| **Bid/Ask market** | Trade on the sum of three card ranks with a synthetic spread that occasionally favors the player |
+| **Bank management** | Start with $1,000; total stakes are validated against your bank before each round |
+| **Round history** | The Outcome panel tracks results and P&L for up to 80 past rounds |
+| **Zero backend** | Everything runs client-side — no server, no database, no accounts |
+| **PWA-ready** | Includes a service worker and web manifest for offline/installable use |
 
 ---
 
 ## Games
 
-### 🪙 Coin Flips
+### Coin Flips
 
 Three fair coins are flipped. Seven bet types are offered:
 
-| Bet | Probability |
-|-----|-------------|
-| Exact order HTH | 1/8 = 12.5% |
-| Exact order THT | 1/8 = 12.5% |
-| Exactly 2 heads | 3/8 = 37.5% |
-| Exactly 1 head | 3/8 = 37.5% |
-| At least 2 heads | 4/8 = 50.0% |
-| First coin is H | 1/2 = 50.0% |
-| Contains HH (consecutive) | 3/8 = 37.5% |
+| Bet | Probability | Description |
+|-----|:-----------:|-------------|
+| Exact order HTH | 12.5% | The three coins land in exactly this sequence |
+| Exact order THT | 12.5% | The three coins land in exactly this sequence |
+| Exactly 2 heads | 37.5% | Any two of three coins are heads |
+| Exactly 1 head | 37.5% | Exactly one coin is heads |
+| At least 2 heads | 50.0% | Two or three coins are heads |
+| First coin is H | 50.0% | Only the first coin matters |
+| Contains HH | 37.5% | At least two consecutive heads appear |
 
-### 🎲 Dice
+### Dice
 
 Two standard six-sided dice are rolled. Seven bet types are offered:
 
-| Bet | Probability |
-|-----|-------------|
-| Sum is 7 | 6/36 ≈ 16.7% |
-| Doubles | 6/36 ≈ 16.7% |
-| Sum ≥ 10 | 6/36 ≈ 16.7% |
-| At least one 6 | 11/36 ≈ 30.6% |
-| Odd sum | 18/36 = 50.0% |
-| First die > second | 15/36 ≈ 41.7% |
-| Sum in {4, 5} | 7/36 ≈ 19.4% |
+| Bet | Probability | Description |
+|-----|:-----------:|-------------|
+| Sum is 7 | 16.7% | Classic craps-style bet |
+| Doubles | 16.7% | Both dice show the same face |
+| Sum ≥ 10 | 16.7% | High-roll bet |
+| At least one 6 | 30.6% | Either die shows a six |
+| Odd sum | 50.0% | The total is odd |
+| First die > second | 41.7% | Strict ordering bet |
+| Sum in {4, 5} | 19.4% | Low-roll bet |
 
-### 🃏 3-Card Market
+### 3-Card Market
 
-Three cards are drawn without replacement from a standard 52-card deck (A=1, J=11, Q=12, K=13). A **bid/ask spread** is quoted on the sum of all three ranks. You take a position before the cards are revealed:
+Three cards are drawn without replacement from a standard 52-card deck (A = 1, J = 11, Q = 12, K = 13). A **bid/ask spread** is quoted on the sum of all three ranks.
 
-- **Buy @Ask** — you profit if the actual sum is above the ask price
-- **Sell @Bid** — you profit if the actual sum is below the bid price
+- **Buy @Ask** — you profit if the actual sum exceeds the ask price
+- **Sell @Bid** — you profit if the actual sum falls below the bid price
+- **P&L** = `units × (actual_sum − entry_price)` for buys; reversed for sells
 
-P&L = Units × (Actual Sum − Entry Price) for a buy; Units × (Entry Price − Actual Sum) for a sell.
+The spread (2–4 points) is randomly generated around a sampled fair value, with a **25% chance** of the quote being nudged in the player's favor. Cards stay face-down until the round resolves.
 
-The spread (2–4 points) is randomly generated, with a 25% chance of a slight player edge baked in. Cards are revealed at round end.
+### 2-Card Side Bets
 
-### 🂠 2-Card Side Bets
+The **first two** cards of the same three-card deal are used for an independent set of bets:
 
-The first two cards of the same three-card deal are used for a separate set of bets:
+| Bet | Probability | Description |
+|-----|:-----------:|-------------|
+| Product of first 2 < 50 | 78.4% | Rank × rank is below 50 |
+| Sum of first 2 is even | 51.0% | Both ranks same parity |
+| Different colors | 51.0% | One red, one black |
+| At least one face card | 47.1% | J, Q, or K among the first two |
 
-| Bet | Probability |
-|-----|-------------|
-| Product of first 2 < 50 | ≈ 78.4% |
-| Sum of first 2 is even | ≈ 51.0% |
-| Different colors | ≈ 51.0% |
-| At least one face card (J/Q/K) | ≈ 47.1% |
-
----
-
-## Bias System
-
-Each round, every bet's multiplier is generated using a weighted random process:
-
-| Bias | Probability | Multiplier range |
-|------|-------------|-----------------|
-| **Fair** | 45% | 98–102% of fair value |
-| **House** | 35% | 80–95% of fair value |
-| **Player** | 20% | 105–125% of fair value |
-
-The fair-value multiplier for a bet with probability *p* is `1/p` (rounded to one decimal, minimum 1.1×). Bias labels and probabilities can be toggled on/off via the toolbar checkboxes.
-
-Because the house bias is more likely than the player bias, the suite is designed to be a small negative EV environment overall — matching how real betting markets operate.
+Probabilities are computed exactly, accounting for sampling without replacement from 52 cards.
 
 ---
 
-## Round Flow
+## Bias & Pricing System
+
+Each round, every bet's payout multiplier is generated through a two-step process:
+
+1. **Fair multiplier** — `1 / probability` (floored at 1.1×)
+2. **Bias perturbation** — a random factor drawn from one of three bands:
+
+| Bias | Selection weight | Factor range | Effect |
+|------|:----------------:|:------------:|--------|
+| **Fair** | 45% | 0.98 – 1.02 | Multiplier ≈ true fair value |
+| **House** | 35% | 0.80 – 0.95 | Multiplier below fair value — the house has an edge |
+| **Player** | 20% | 1.05 – 1.25 | Multiplier above fair value — the player has an edge |
+
+Because house-biased lines are generated more often than player-biased ones, the suite is a **slightly negative EV environment** overall — matching how real betting markets operate.
+
+Both the **probability** column and the **bias badge** can be toggled on or off with the toolbar checkboxes, so you can practice with or without that information.
+
+---
+
+## Round Lifecycle
 
 ```
-┌──────────────────────────────────────────────────────┐
-│  1. Multipliers refreshed → place stakes + market    │
-│  2. Click "Start the game"                           │
-│     • Total stake deducted from bank                 │
-│     • Coins, dice, and 3 cards generated             │
-│     • All bets settled simultaneously                │
-│     • Cards revealed, P&L displayed                  │
-│  3. Click "Next" → multipliers refresh, repeat       │
-└──────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────┐
+│  1. Multipliers & market quotes refreshed              │
+│  2. Place stakes on any/all games + take a market side │
+│  3. Click "Start the game"                             │
+│     • Total stake validated against bank               │
+│     • Coins flipped, dice rolled, 3 cards drawn        │
+│     • All bets settled simultaneously                  │
+│     • Cards revealed, round P&L displayed              │
+│  4. Click "Next" → new multipliers, new quotes, repeat │
+└────────────────────────────────────────────────────────┘
 ```
 
-Up to 80 rounds of history are stored in memory and displayed in the Outcome panel.
+**Settlement:** winning bets return `stake + round(stake × multiplier)`. Losing stakes are forfeited. Market P&L is added or subtracted separately. Up to **80 rounds** of history are kept in memory.
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| UI framework | React 18 |
-| Language | TypeScript 5 |
-| State management | Zustand 4 |
-| Build tool | Vite 4 |
-| Linting | ESLint + TypeScript ESLint |
-| Deployment | Vercel |
+| Layer | Technology | Version |
+|-------|-----------|---------|
+| UI framework | React | 18 |
+| Language | TypeScript | 5 |
+| State management | Zustand | 4 |
+| Build tool | Vite | 4 |
+| Linting | ESLint + @typescript-eslint | 8 / 6 |
+| Deployment | Vercel (static) | — |
 
-No UI component library is used — all styling is hand-written CSS.
+No UI component library is used — all layout and styling is hand-written CSS with a responsive grid.
 
 ---
 
 ## Project Structure
 
 ```
-betting-suite/
+betgame/
+├── public/
+│   ├── manifest.json          # PWA web manifest
+│   └── sw.js                  # Service worker for offline support
+│
 ├── src/
-│   ├── App.tsx                  # Round orchestration & bet settlement
-│   ├── main.tsx                 # React entry point
-│   ├── styles.css               # Global styles
+│   ├── main.tsx               # React entry point
+│   ├── App.tsx                # Round orchestration, settlement logic, predicate maps
+│   ├── styles.css             # Global styles (responsive 2×2 grid)
 │   │
 │   ├── components/
-│   │   ├── Outcome.tsx          # Round result + history panel
-│   │   ├── Coins.tsx            # Coin flip betting table + controls
-│   │   ├── Dice.tsx             # Dice betting table
-│   │   ├── Market.tsx           # 3-card bid/ask market
-│   │   └── FirstTwo.tsx         # 2-card side bet table
+│   │   ├── Outcome.tsx        # Round result display + scrollable history
+│   │   ├── Coins.tsx          # Coin-flip betting table, bank status bar, round controls
+│   │   ├── Dice.tsx           # Dice betting table
+│   │   ├── Market.tsx         # 3-card bid/ask market with card rendering
+│   │   └── FirstTwo.tsx       # 2-card side-bet table
 │   │
 │   ├── store/
-│   │   └── useGameStore.ts      # Zustand store (bank, stakes, terms, history)
+│   │   └── useGameStore.ts    # Zustand store — bank, stakes, terms, market, history
 │   │
 │   └── lib/
-│       ├── probabilities.ts     # Analytical probability functions + predicates
-│       ├── bias.ts              # Multiplier generation with bias weighting
-│       ├── deck.ts              # Card types, deck creation, Fisher-Yates shuffle
-│       ├── random.ts            # RNG utilities (int, float, weighted choice)
-│       └── format.ts            # Money, multiplier, probability formatters
+│       ├── probabilities.ts   # Analytical probability functions + outcome predicates
+│       ├── bias.ts            # Fair multiplier → biased multiplier generation
+│       ├── deck.ts            # Card types, 52-card deck, Fisher-Yates shuffle, draw
+│       ├── random.ts          # RNG helpers (int, float, weighted choice, coin flip, dice roll)
+│       └── format.ts          # Display formatters (money, multiplier, probability, dice faces)
 │
-├── public/                      # Static assets (icons, manifest, service worker)
-├── dist/                        # Production build output
-├── docs/                        # README assets (demo.gif, screenshots)
-├── vite.config.ts
+├── docs/
+│   └── demo.gif               # Screen recording used in this README
+│
+├── build.cjs                  # Vercel build helper (runs vite build)
+├── vite.config.ts             # Vite config (React plugin, relative base path)
 ├── tsconfig.json
-└── vercel.json
+├── tsconfig.node.json
+├── vercel.json                # Vercel deployment config
+└── package.json
 ```
 
 ---
@@ -183,7 +201,7 @@ betting-suite/
 ```bash
 # Clone the repository
 git clone <repo-url>
-cd betting-suite
+cd betgame
 
 # Install dependencies
 npm install
@@ -192,32 +210,51 @@ npm install
 npm run dev
 ```
 
-The app opens at `http://localhost:5173` by default.
-
-**Windows users:** double-click `start-betting-suite.bat` or run `start-betting-suite.ps1` from PowerShell for a one-click launch.
+The app opens at [http://localhost:5173](http://localhost:5173) by default.
 
 ---
 
-## Build & Deploy
+## Building & Deploying
 
 ```bash
-# Type-check + production build
+# Production build (type-check + bundle)
 npm run build-with-tsc
 
-# Preview the production build locally
+# Production build (skip type-check)
+npm run build
+
+# Preview the production bundle locally
 npm run preview
 
-# Lint the codebase
+# Lint
 npm run lint
 ```
 
-The project is configured for zero-config deployment on **Vercel** via `vercel.json`.
+### Vercel
+
+The project includes a `vercel.json` that points to `node build.cjs` as the build command and `dist/` as the output directory. Push to a connected repo and Vercel handles the rest — zero additional configuration needed.
+
+---
+
+## Design Decisions
+
+- **Predicates live next to probabilities.** Each bet type in `probabilities.ts` has a paired `*Prob_*` function (returns the exact probability) and a `*Pred_*` function (returns a boolean for a given outcome). This keeps the math auditable in one place.
+- **Bias is transparent.** The bias system is intentionally visible to the player (when toggled on) so they can practice identifying +EV and −EV lines — a core skill in real-world betting and trading.
+- **Market quotes are imperfect by design.** The bid/ask is centred on a sampled fair value from three independent uniform [1–13] draws rather than the exact without-replacement distribution. This mirrors real-world market-making where the market-maker's model is an approximation.
+- **No persistent storage.** Keeping all state in Zustand (in-memory) means a page refresh resets everything. This is deliberate — the tool is for practice sessions, not long-term tracking.
 
 ---
 
 ## Known Limitations
 
-- **No persistent storage** — bank and history reset on page refresh. All state is in-memory via Zustand.
-- **No reset button** — if you want to restart from $1,000, refresh the page. (A `resetGame` action exists in the store but has no UI trigger yet.)
-- **Market fair value approximation** — the bid/ask quote is centred on a sample from three independent uniform [1–13] draws, which is a close but not exact approximation of the actual card-sum distribution (cards are drawn without replacement from a 52-card deck).
-- **No test suite** — the probability functions are analytically correct but have no automated tests.
+- **No persistence** — bank and history reset on page refresh.
+- **No reset button in the UI** — a `resetGame` action exists in the store but is not yet wired to a button. Refresh the page to restart from $1,000.
+- **`Math.random()` only** — adequate for an educational tool, not suitable for audit-grade fairness.
+- **No automated tests** — probability functions are analytically correct but have no test suite.
+- **Market fair-value approximation** — see [Design Decisions](#design-decisions) above.
+
+---
+
+## License
+
+This project is provided as-is for educational purposes.
