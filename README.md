@@ -210,7 +210,6 @@ npm install
 npm run dev
 ```
 
-The app opens at [http://localhost:5173](http://localhost:5173) by default.
 
 ---
 
